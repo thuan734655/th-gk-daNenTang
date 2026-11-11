@@ -1,0 +1,15 @@
+import { Router } from "express";
+import * as auth from "../controllers/auth.controller.js";
+import * as products from "../controllers/product.controller.js";
+import { authenticate, requireAdmin, limitAuth } from "../middleware/auth.js";
+export const routes = Router();
+const productRoutes = Router();
+productRoutes.use(authenticate, requireAdmin);
+productRoutes.get("/", products.list);
+productRoutes.post("/", products.create);
+productRoutes.get("/:id", products.get);
+productRoutes.patch("/:id", products.update);
+productRoutes.delete("/:id", products.remove);
+routes.use("/products", productRoutes);
+routes.post("/auth/login", limitAuth, auth.signIn);
+routes.get("/auth/me", authenticate, auth.me);
